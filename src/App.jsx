@@ -22,7 +22,7 @@ const projects = [
     title: "Water Level Mobile Monitoring App",
     description:
       "A real-time water level monitoring mobile application that tracks tank levels using IoT sensor data and sends Firebase push notifications when levels are critical.",
-    image: "/img.png",
+    image: "https://images.unsplash.com/photo-1581093588401-fbb62a02f120?w=600&q=80",
     tags: ["React Native", "Firebase", "IoT", "Node.js"],
     github: "https://github.com/venkateshs07243-star",
   },
@@ -175,7 +175,7 @@ export default function App() {
           className="text-2xl md:text-3xl font-bold text-slate-300 mb-6 h-10"
         >
           <Typewriter
-            words={["Full Stack Developer", "React Native Developer", "Firebase Expert"]}
+            words={["Full Stack Developer", "React Native Developer", "MERN Stack Developer", "Firebase Developer"]}
             loop={0} cursor cursorStyle="|" typeSpeed={70} deleteSpeed={50} delaySpeed={1200}
           />
         </motion.div>
