@@ -4,7 +4,7 @@ import { Typewriter } from "react-simple-typewriter";
 import { FaBars, FaTimes, FaGithub, FaLinkedin, FaEnvelope, FaExternalLinkAlt, FaArrowRight, FaArrowDown, FaBriefcase, FaUpload } from "react-icons/fa";
 import emailjs from "@emailjs/browser";
 
-// ─── Skill Data ───────────────────────────────────────────────────────────────
+// ─── Skill Data ───────────────────────────────────────────────────────────── ──
 const skills = [
   { name: "HTML",         icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" },
   { name: "CSS",          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" },
