@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import {useEffect} from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Typewriter } from "react-simple-typewriter";
 import { FaBars, FaTimes, FaGithub, FaLinkedin, FaEnvelope, FaExternalLinkAlt, FaArrowRight, FaArrowDown, FaBriefcase, FaUpload } from "react-icons/fa";
@@ -164,11 +165,21 @@ export default function App() {
 
   // ── Photo upload ─────────────────────────────────────────────────────────────
   const handlePhotoChange = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    setPhotoFile(file);
-    setPhotoURL(URL.createObjectURL(file));
+  const file = e.target.files[0];
+
+  if (!file) return;
+
+  setPhotoFile(file);
+
+  const reader = new FileReader();
+
+  reader.onloadend = () => {
+    localStorage.setItem("profilePhoto", reader.result);
+    setPhotoURL(reader.result);
   };
+
+  reader.readAsDataURL(file);
+};
 
   // ── Resume upload ────────────────────────────────────────────────────────────
   const handleResumeChange = (e) => {
@@ -177,11 +188,29 @@ export default function App() {
     setResumeFile(file);
   };
 
-  const resumeHref = resumeFile ? URL.createObjectURL(resumeFile) : "/resume.pdf";
+  // ── Load persisted photo from localStorage on mount ─────────────────────────
+  useEffect(() => {
+    const savedPhoto = localStorage.getItem("profilePhoto");
+    if (savedPhoto) {
+      setPhotoURL(savedPhoto);
+    }
+  }, []);
 
-  const bg    = darkMode ? "bg-[#070b14] text-white"       : "bg-[#f0f4ff] text-[#0a0f1e]";
-  const card  = darkMode ? "bg-[#0e1628] border-[#1e2d50]" : "bg-white border-gray-200";
-  const muted = darkMode ? "text-slate-400"                 : "text-slate-500";
+  const resumeHref = resumeFile
+    ? URL.createObjectURL(resumeFile)
+    : "/resume.pdf";
+
+  const bg = darkMode
+    ? "bg-[#070b14] text-white"
+    : "bg-[#f0f4ff] text-[#0a0f1e]";
+
+  const card = darkMode
+    ? "bg-[#0e1628] border-[#1e2d50]"
+    : "bg-white border-gray-200";
+
+  const muted = darkMode
+    ? "text-slate-400"
+    : "text-slate-500";
 
   return (
     <div className={`scroll-smooth min-h-screen font-sans ${bg}`}>
