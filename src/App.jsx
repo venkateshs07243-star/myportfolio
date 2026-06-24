@@ -124,7 +124,8 @@ export default function App() {
   const [error, setError]         = useState("");
   const [photoFile, setPhotoFile] = useState(null);
   const [photoURL, setPhotoURL]   = useState(null);
-  const [resumeFile, setResumeFile] = useState(null);
+  const [resumeName, setResumeName] = useState("");
+  const [resumeURL, setResumeURL] = useState("");
   const formRef   = useRef(null);
   const photoRef  = useRef(null);
   const resumeRef = useRef(null);
@@ -185,20 +186,33 @@ export default function App() {
   const handleResumeChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    setResumeFile(file);
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      localStorage.setItem("resumeData", reader.result);
+      localStorage.setItem("resumeName", file.name);
+      setResumeName(file.name);
+      setResumeURL(reader.result);
+    };
+    reader.readAsDataURL(file);
   };
 
-  // ── Load persisted photo from localStorage on mount ─────────────────────────
+  // ── Load persisted photo and resume from localStorage on mount ────────────
   useEffect(() => {
     const savedPhoto = localStorage.getItem("profilePhoto");
     if (savedPhoto) {
       setPhotoURL(savedPhoto);
     }
+
+    const savedResumeData = localStorage.getItem("resumeData");
+    const savedResumeName = localStorage.getItem("resumeName");
+    if (savedResumeData && savedResumeName) {
+      setResumeName(savedResumeName);
+      setResumeURL(savedResumeData);
+    }
   }, []);
 
-  const resumeHref = resumeFile
-    ? URL.createObjectURL(resumeFile)
-    : "/resume.pdf";
+  const resumeHref = resumeURL || "/resume.pdf";
 
   const bg = darkMode
     ? "bg-[#070b14] text-white"
@@ -244,9 +258,9 @@ export default function App() {
         <div className="hidden md:flex items-center gap-3 ml-4">
           <label className="cursor-pointer flex items-center gap-2 bg-cyan-500/10 border border-cyan-500/30
                             text-cyan-400 px-3 py-1.5 rounded-lg text-xs hover:bg-cyan-500/20 transition"
-                 title={resumeFile ? resumeFile.name : "Upload your resume PDF"}>
+                 title={resumeName ? resumeName : "Upload your resume PDF"}>
             <FaUpload size={11} />
-            {resumeFile ? "Resume ✓" : "Upload CV"}
+            {resumeName ? "Resume ✓" : "Upload CV"}
             <input type="file" accept=".pdf" className="hidden" ref={resumeRef} onChange={handleResumeChange} />
           </label>
 
@@ -307,7 +321,7 @@ export default function App() {
         >
           <ArrowBtn
             href={resumeHref}
-            download={resumeFile ? resumeFile.name : "resume.pdf"}
+            download={resumeName ? resumeName : "resume.pdf"}
             className="bg-cyan-400 text-black px-7 py-3 rounded-xl font-bold hover:bg-cyan-300 transition shadow-lg shadow-cyan-500/20"
           >
             Download Resume
@@ -653,15 +667,15 @@ export default function App() {
               <label className="cursor-pointer flex items-center gap-3 border-2 border-dashed border-cyan-500/30
                                 rounded-xl p-4 hover:border-cyan-500/60 hover:bg-cyan-500/5 transition text-sm">
                 <FaUpload className="text-cyan-400 shrink-0" />
-                <span className={resumeFile ? "text-cyan-400 font-semibold" : muted}>
-                  {resumeFile ? `✓ ${resumeFile.name}` : "Click to upload your resume (.pdf)"}
+                <span className={resumeName ? "text-cyan-400 font-semibold" : muted}>
+                  {resumeName ? `✓ ${resumeName}` : "Click to upload your resume (.pdf)"}
                 </span>
                 <input type="file" accept=".pdf" className="hidden" onChange={handleResumeChange} />
               </label>
-              {resumeFile && (
+              {resumeURL && (
                 <a
-                  href={URL.createObjectURL(resumeFile)}
-                  download={resumeFile.name}
+                  href={resumeURL}
+                  download={resumeName}
                   className="mt-3 inline-flex items-center gap-2 text-xs text-cyan-400 hover:underline font-semibold"
                 >
                   Download uploaded resume <FaArrowRight size={10} />
